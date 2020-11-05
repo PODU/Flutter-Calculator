@@ -17,6 +17,7 @@ class DBOperations {
       String path = join(await getDatabasesPath(), db_name);
       db = await openDatabase(path, version: getVersion(), onCreate: onCreate);
     } catch (exp) {
+      print('Failed to initialize DataBase');
       print(exp);
     }
   }

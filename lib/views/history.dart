@@ -1,5 +1,6 @@
 import 'package:calculator/modals/Solution.dart';
 import 'package:calculator/services/db_operations/db_operations.dart';
+import 'package:calculator/views/HistoryCards/historyCard.dart';
 import 'package:flutter/material.dart';
 
 class History extends StatefulWidget {
@@ -25,10 +26,35 @@ class _HistoryState extends State<History> {
             });
           }
         }
-        print(entries);
         this.list = entries;
       });
     });
+  }
+
+  Widget buildScreen() {
+    if (this.list.isEmpty) {
+      return Center(
+        child: Text(
+          'No History',
+          style: Theme.of(context).textTheme.headline2,
+        ),
+      );
+    } else {
+      return ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+          color: Colors.black,
+        ),
+        padding: EdgeInsets.all(10),
+        itemCount: this.list.length,
+        itemBuilder: (BuildContext builderContext, int index) {
+          String key = this.list.keys.elementAt(index);
+          return HistoryCard(
+            timeStamp: key,
+            list: this.list[key],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -72,7 +98,6 @@ class _HistoryState extends State<History> {
                             child: Text('Yes'),
                             onPressed: () {
                               DBOperations.delete().then((value) {
-                                print('sa');
                                 Navigator.pop(context);
                               }).catchError((err) {
                                 print('Error while deleting entries from DB.');
@@ -98,7 +123,7 @@ class _HistoryState extends State<History> {
           ],
         ),
         body: Container(
-          child: Text('History'),
+          child: buildScreen(),
         ),
       );
     }

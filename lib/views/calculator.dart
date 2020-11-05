@@ -241,8 +241,35 @@ class _CalculatorState extends State<Calculator> {
     });
   }
 
+  void navigateToHistory() async {
+    Object result = await Navigator.pushNamed(
+      context,
+      '/history',
+    );
+    if (result != null) {
+      Map res = Map<String, dynamic>.from(result);
+      setState(() {
+        if (res.containsKey('solution')) {
+          this.totaledExpression = res['solution'];
+        }
+        if (res.containsKey('expression')) {
+          this.currentExpression = res['expression'];
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    Map args = ModalRoute.of(context).settings.arguments as Map;
+    if (args != null) {
+      if (args.containsKey('solution')) {
+        this.totaledExpression = args['solution'];
+      }
+      if (args.containsKey('expression')) {
+        this.currentExpression = args['expression'];
+      }
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Calculator'),
@@ -250,10 +277,7 @@ class _CalculatorState extends State<Calculator> {
           IconButton(
             icon: Icon(Icons.history),
             onPressed: () {
-              Navigator.pushNamed(
-                context,
-                '/history',
-              );
+              navigateToHistory();
             },
           )
         ],
